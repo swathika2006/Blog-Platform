@@ -10,6 +10,7 @@
     "db:migrate": "prisma migrate dev --name init",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
     "setup": "npm install && prisma generate && prisma migrate dev --name init && node prisma/seed.js"
   },
   "dependencies": {
