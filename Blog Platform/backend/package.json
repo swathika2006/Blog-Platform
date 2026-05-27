@@ -6,12 +6,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev --name init",
+    "build": "npx prisma generate",
+    "db:generate": "npx prisma generate",
     "db:seed": "node prisma/seed.js",
-    "db:studio": "prisma studio",
-    "postinstall": "prisma generate",
-    "setup": "npm install && prisma generate && prisma migrate dev --name init && node prisma/seed.js"
+    "db:studio": "npx prisma studio",
+    "setup": "npm install && npx prisma generate && node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
