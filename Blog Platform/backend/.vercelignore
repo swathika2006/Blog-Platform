@@ -1,5 +1,7 @@
-node_modules
 .env
 prisma/dev.db
 prisma/migrations
 *.log
+node_modules/.bin
+node_modules/nodemon
+node_modules/prisma
