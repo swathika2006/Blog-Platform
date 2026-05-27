@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "postinstall": "node ./node_modules/prisma/bin/prisma.js generate",
+    "postinstall": "node ./node_modules/prisma/build/index.js generate",
     "db:seed": "node prisma/seed.js"
   },
   "dependencies": {
