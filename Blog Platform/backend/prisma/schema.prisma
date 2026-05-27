@@ -8,7 +8,6 @@ datasource db {
 }
 
 model User {
-  // Changed id type to String, added mapping for MongoDB _id, and used ObjectId format
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   username     String    @unique
   email        String    @unique
@@ -19,27 +18,23 @@ model User {
 }
 
 model Post {
-  // Changed id type to String and mapped to MongoDB _id
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  // Changed relation foreign key to String to match User.id, adding @db.ObjectId attribute
   userId    String    @db.ObjectId
   title     String
   slug      String    @unique
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
   comments  Comment[]
 }
 
 model Comment {
-  // Changed id type to String and mapped to MongoDB _id
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  // Changed relation foreign keys to String to match target tables, adding @db.ObjectId
-  postId    String    @db.ObjectId
-  userId    String    @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  postId    String   @db.ObjectId
+  userId    String   @db.ObjectId
   content   String
-  createdAt DateTime  @default(now())
-  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }

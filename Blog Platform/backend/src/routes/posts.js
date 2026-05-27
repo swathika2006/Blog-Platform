@@ -66,7 +66,8 @@ router.get('/', async (req, res) => {
 // GET /api/posts/user/:userId — posts by user (for dashboard)
 router.get('/user/:userId', authenticate, async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId);
+    const userId = req.params.userId; // MongoDB ObjectId string
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Access denied.' });
     }
@@ -134,7 +135,7 @@ router.post('/', authenticate, async (req, res) => {
         title: title.trim(),
         slug,
         content: content.trim(),
-        userId: req.user.id,
+        userId: req.user.id, // already a string ObjectId from JWT
       },
       include: {
         user: { select: { id: true, username: true } },
@@ -152,7 +153,7 @@ router.post('/', authenticate, async (req, res) => {
 // PUT /api/posts/:id — update post (author only)
 router.put('/:id', authenticate, async (req, res) => {
   try {
-    const postId = parseInt(req.params.id);
+    const postId = req.params.id; // MongoDB ObjectId string
     const { title, content } = req.body;
 
     const existing = await prisma.post.findUnique({ where: { id: postId } });
@@ -198,7 +199,7 @@ router.put('/:id', authenticate, async (req, res) => {
 // DELETE /api/posts/:id — delete post (author only)
 router.delete('/:id', authenticate, async (req, res) => {
   try {
-    const postId = parseInt(req.params.id);
+    const postId = req.params.id; // MongoDB ObjectId string
 
     const existing = await prisma.post.findUnique({ where: { id: postId } });
     if (!existing) {
@@ -208,7 +209,10 @@ router.delete('/:id', authenticate, async (req, res) => {
       return res.status(403).json({ error: 'You can only delete your own posts.' });
     }
 
+    // Manually delete comments first (no CASCADE in MongoDB Prisma)
+    await prisma.comment.deleteMany({ where: { postId } });
     await prisma.post.delete({ where: { id: postId } });
+
     res.json({ message: 'Post deleted successfully.' });
   } catch (err) {
     console.error('Delete post error:', err);

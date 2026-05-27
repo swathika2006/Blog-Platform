@@ -7,14 +7,28 @@ const postRoutes = require('./routes/posts');
 const commentRoutes = require('./routes/comments');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
 
 // Middleware
+const allowedOrigins = [
+  'https://blog-platform-omega-beige.vercel.app',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+];
+
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin ${origin} is not allowed.`));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -39,9 +53,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'An unexpected server error occurred.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Blog Platform API running on http://localhost:${PORT}`);
-  console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
-});
+// Only listen locally — Vercel handles the port in production
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Blog Platform API running on http://localhost:${PORT}`);
+    console.log(`   Health check: http://localhost:${PORT}/api/health\n`);
+  });
+}
 
 module.exports = app;

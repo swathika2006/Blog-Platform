@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 // GET /api/comments/:postId — get all comments for a post
 router.get('/:postId', async (req, res) => {
   try {
-    const postId = parseInt(req.params.postId);
+    const postId = req.params.postId; // MongoDB ObjectId string
 
     const comments = await prisma.comment.findMany({
       where: { postId },
@@ -41,7 +41,7 @@ router.post('/', authenticate, async (req, res) => {
     }
 
     // Verify post exists
-    const post = await prisma.post.findUnique({ where: { id: parseInt(postId) } });
+    const post = await prisma.post.findUnique({ where: { id: postId } });
     if (!post) {
       return res.status(404).json({ error: 'Post not found.' });
     }
@@ -49,7 +49,7 @@ router.post('/', authenticate, async (req, res) => {
     const comment = await prisma.comment.create({
       data: {
         content: content.trim(),
-        postId: parseInt(postId),
+        postId,     // already a string ObjectId
         userId: req.user.id,
       },
       include: {
@@ -67,7 +67,7 @@ router.post('/', authenticate, async (req, res) => {
 // DELETE /api/comments/:id — delete own comment
 router.delete('/:id', authenticate, async (req, res) => {
   try {
-    const commentId = parseInt(req.params.id);
+    const commentId = req.params.id; // MongoDB ObjectId string
 
     const comment = await prisma.comment.findUnique({ where: { id: commentId } });
     if (!comment) {
