@@ -140,7 +140,7 @@ async function handleCommentSubmit(e, postId) {
   try {
     const data = await apiFetch('/comments', {
       method: 'POST',
-      body: JSON.stringify({ postId: parseInt(postId), content }),
+      body: JSON.stringify({ postId, content }),
     });
 
     const comment = data.comment;

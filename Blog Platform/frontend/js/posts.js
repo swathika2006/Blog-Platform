@@ -273,7 +273,7 @@ function bindDashboardPostActions() {
 
   list.querySelectorAll('[data-action="delete"]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      pendingDeleteId = parseInt(btn.dataset.id);
+      pendingDeleteId = btn.dataset.id;
       document.getElementById('confirm-delete-subtitle').textContent =
         `"${btn.dataset.title}" will be permanently deleted.`;
       showModal('modal-confirm-delete');
