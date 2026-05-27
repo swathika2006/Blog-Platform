@@ -4,35 +4,28 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding database...');
+  console.log('🌱 Seeding MongoDB Atlas...');
 
-  // Clean existing data
-  await prisma.comment.deleteMany();
-  await prisma.post.deleteMany();
-  await prisma.user.deleteMany();
+  // Check if already seeded
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0) {
+    console.log('⚠️  Database already has data. Skipping seed.');
+    console.log('   To reseed, manually clear the collections in MongoDB Atlas.');
+    return;
+  }
 
-  // Create seed users
   const passwordHash = await bcrypt.hash('Password123!', 12);
 
   const devPioneer = await prisma.user.create({
-    data: {
-      username: 'dev_pioneer',
-      email: 'pioneer@blog.com',
-      passwordHash,
-    },
+    data: { username: 'dev_pioneer', email: 'pioneer@blog.com', passwordHash },
   });
 
   const codeTraveler = await prisma.user.create({
-    data: {
-      username: 'code_traveler',
-      email: 'traveler@blog.com',
-      passwordHash,
-    },
+    data: { username: 'code_traveler', email: 'traveler@blog.com', passwordHash },
   });
 
   console.log(`✅ Created users: ${devPioneer.username}, ${codeTraveler.username}`);
 
-  // Create seed post
   const post1 = await prisma.post.create({
     data: {
       userId: devPioneer.id,
@@ -46,28 +39,11 @@ Meanwhile, AI copilots have matured from novelty to necessity. The best develope
 
 On the frontend, we're seeing a renaissance of minimalism. After years of framework fatigue, many teams are returning to vanilla approaches, or adopting ultra-thin layers like Lit or HTMX that keep the browser runtime lean. The "ship less JavaScript" mantra has never been more relevant.
 
-What does this mean for you? Double down on fundamentals: HTTP, the DOM, accessibility, and system design. These skills compound, whereas framework knowledge often expires. The developers who thrive in 2026 are the ones who understand the platform deeply and reach for abstractions only when they genuinely add value.
-
 The future is fast, distributed, and AI-augmented — and it's more exciting than ever to be building on the web.`,
     },
   });
 
-  console.log(`✅ Created post: "${post1.title}"`);
-
-  // Create seed comment
-  const comment1 = await prisma.comment.create({
-    data: {
-      postId: post1.id,
-      userId: codeTraveler.id,
-      content:
-        'Spot on! Embracing edge architecture has completely eliminated our cold-start issues this year.',
-    },
-  });
-
-  console.log(`✅ Created comment by ${codeTraveler.username}`);
-
-  // Additional seed posts for a richer feed
-  await prisma.post.create({
+  const post2 = await prisma.post.create({
     data: {
       userId: codeTraveler.id,
       title: 'Why I Switched Back to SQLite in 2026',
@@ -78,9 +54,7 @@ SQLite has undergone a quiet revolution. With WAL mode, proper indexing, and mod
 
 The operational simplicity alone is worth it. No connection pooling, no separate process to manage, no cloud database bill. Your database is just a file. Back it up with cp. Replicate it with Litestream to S3. Done.
 
-For applications with up to a few thousand concurrent users, SQLite is not just "good enough" — it's often the superior choice. It's faster for reads, simpler to operate, and trivial to test locally with production parity.
-
-The lesson here is to resist the urge to reach for complexity before you need it. SQLite is a masterpiece of software engineering. Give it a fair chance before defaulting to the heavyweight alternatives.`,
+The lesson here is to resist the urge to reach for complexity before you need it. SQLite is a masterpiece of software engineering.`,
     },
   });
 
@@ -91,19 +65,27 @@ The lesson here is to resist the urge to reach for complexity before you need it
       slug: 'building-with-ai-lessons-from-6-months',
       content: `Six months ago, I started using an AI coding assistant as a true pair programmer — not just for boilerplate, but for architecture, debugging, and code review. Here's what I learned.
 
-First: AI excels at breadth, humans excel at depth. When I need to explore a new library, spin up a proof of concept, or generate test cases, the AI is invaluable. When I need to reason about subtle edge cases in a distributed system I've lived with for two years, my contextual knowledge wins.
+First: AI excels at breadth, humans excel at depth. When I need to explore a new library, spin up a proof of concept, or generate test cases, the AI is invaluable.
 
-Second: prompt quality is a skill. The engineers getting 10x value from AI tools are the ones who write precise, context-rich prompts. Vague questions get vague answers. Treat it like writing a good issue ticket.
+Second: prompt quality is a skill. The engineers getting 10x value from AI tools are the ones who write precise, context-rich prompts.
 
-Third: review everything. AI-generated code can be subtly wrong in ways that compile and pass basic tests. The danger zone is confident-sounding code with hidden assumptions. Always read what you ship.
+Third: review everything. AI-generated code can be subtly wrong in ways that compile and pass basic tests.
 
-The bottom line: AI pair programming is a force multiplier for developers who already have strong fundamentals. It doesn't replace understanding — it amplifies it. Invest in the basics, and the AI tools will make you formidable.`,
+The bottom line: AI pair programming is a force multiplier for developers who already have strong fundamentals.`,
     },
   });
 
-  console.log('✅ Created 2 additional seed posts');
+  await prisma.comment.create({
+    data: {
+      postId: post1.id,
+      userId: codeTraveler.id,
+      content: 'Spot on! Embracing edge architecture has completely eliminated our cold-start issues this year.',
+    },
+  });
+
+  console.log('✅ Created 3 posts and 1 comment');
   console.log('\n🎉 Database seeded successfully!');
-  console.log('\n📋 Seed credentials:');
+  console.log('\n📋 Login credentials:');
   console.log('   pioneer@blog.com  / Password123!');
   console.log('   traveler@blog.com / Password123!');
 }

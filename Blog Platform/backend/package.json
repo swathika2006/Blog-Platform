@@ -1,15 +1,13 @@
 {
   "name": "blog-platform-backend",
   "version": "1.0.0",
-  "description": "REST API for the Blog Platform",
+  "description": "REST API for the Blog Platform — MongoDB Atlas + Vercel",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "postinstall": "node ./node_modules/prisma/bin/prisma.js generate",
-    "db:seed": "node prisma/seed.js",
-    "db:studio": "node ./node_modules/prisma/bin/prisma.js studio",
-    "setup": "npm install && node prisma/seed.js"
+    "db:seed": "node prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

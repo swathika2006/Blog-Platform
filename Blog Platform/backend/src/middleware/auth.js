@@ -14,7 +14,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      return res.status(401).json({ error: 'Token has expired. Please log in again.' });
+      return res.status(401).json({ error: 'Session expired. Please log in again.' });
     }
     return res.status(403).json({ error: 'Invalid token.' });
   }
