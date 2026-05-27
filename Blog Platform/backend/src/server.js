@@ -9,10 +9,10 @@ const commentRoutes = require('./routes/comments');
 const app = express();
 
 // ── CORS ──────────────────────────────────────────────────────────────
-// ── CORS ──────────────────────────────────────────────────────────────
 const allowedOrigins = [
   'https://blog-platform-omega-beige.vercel.app',
-  'https://blog.swathika.me', 
+  'https://blog.swathika.me',
+  'http://blog.swathika.me',
   'http://localhost:5500',
   'http://127.0.0.1:5500',
   'http://localhost:3000',
