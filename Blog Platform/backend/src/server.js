@@ -61,14 +61,10 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'An unexpected server error occurred.' });
 });
 
-// ── SERVER ─────────────────────────────────────────────────────────────
-// Only listen when running locally — Vercel manages the port in production
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`\n🚀 API running at http://localhost:${PORT}`);
-    console.log(`   Health: http://localhost:${PORT}/api/health\n`);
-  });
-}
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`\n🚀 API running at port ${PORT}`);
+  console.log(`   Health check: /api/health\n`);
+});
 
 module.exports = app;
