@@ -172,19 +172,6 @@ function handleLogout() {
   window.location.hash = '#feed';
 }
 
-// ===== DEMO ACCOUNT QUICK LOGIN =====
-function setupDemoLogin() {
-  document.querySelectorAll('.demo-cred-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const email = btn.dataset.email;
-      const pass = btn.dataset.pass;
-      document.getElementById('login-email').value = email;
-      document.getElementById('login-password').value = pass;
-      document.getElementById('form-login').dispatchEvent(new Event('submit', { cancelable: true }));
-    });
-  });
-}
-
 // ===== SETUP =====
 function setupAuth() {
   // Form submissions
@@ -222,9 +209,6 @@ function setupAuth() {
   document.getElementById('reg-password').addEventListener('input', (e) => {
     updatePasswordStrength(e.target.value);
   });
-
-  // Demo logins
-  setupDemoLogin();
 
   // Restore session on load
   const user = getUser();
